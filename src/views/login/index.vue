@@ -42,8 +42,80 @@
 
 <script>
     import {striptscript,validateEmail,validateCode,validatePass} from "utils/validate"
+    import {isRef, onMounted, reactive, ref, toRefs} from "@vue/composition-api";
     export default {
         name: "index",
+        setup(props,context){
+           /*对象声明reactive*/
+           const menutab=reactive([
+               {text:'登录',current:true,type:'login'},
+               {text:'注册',current: false,type: 'register'}
+               ])
+            /*声明rules*/
+            const rules=reactive({
+                username: [
+                    { validator: username, trigger: 'blur' }
+                ],
+                password: [
+                    { validator: password, trigger: 'blur' }
+                ],
+                code: [
+                    { validator: code, trigger: 'blur' }
+                ],
+                passwords:[
+                    {validator:passwords,trigger:'blur' }
+                ]
+            })
+            /*声明ruleForm*/
+            const ruleForm= reactive({
+                username: '',
+                    password: '',
+                    code: '',
+                    passwords:''
+            })
+            /*基础类型ref
+            * isRef 判断是否是基础数据类型
+            * toRefs把对象类型转成基础类型
+            * */
+            const  model=ref('login')
+            console.log(model.value)
+            console.log(isRef(model)?true:false)
+            console.log(toRefs(menutab))
+            /*挂载完成以后*/
+            onMounted(()=>{
+
+
+            })
+
+            /*声明函数*/
+            const toggleMenu=data =>{
+                menutab.forEach(item=>{
+                    item.current=false;
+                })
+                    data.current=true;
+                model.value=data.type;
+            }
+            const submitForm=formName=> {
+                this.$refs[formName].validate((valid) => {
+                    if (valid) {
+                        alert('submit!');
+                    } else {
+                        console.log('error submit!!');
+                        return false;
+                    }
+                });
+            }
+
+            return{
+                toggleMenu,
+                submitForm,
+                menutab,
+                ruleForm,
+                model,
+                rules
+            }
+
+        },
         data(){
             /*密码验证*/
             let password = (rule, value, callback) => {
@@ -101,51 +173,12 @@
 
             }
             return{
-                menutab: [{text:'登录',current:true,type:'login'}, {text:'注册',current: false,type: 'register'}],
-                model:'login',
-                ruleForm: {
-                    username: '',
-                    password: '',
-                    code: '',
-                    passwords:''
-                },
-                rules: {
-                    username: [
-                        { validator: username, trigger: 'blur' }
-                    ],
-                    password: [
-                        { validator: password, trigger: 'blur' }
-                    ],
-                    code: [
-                        { validator: code, trigger: 'blur' }
-                    ],
-                    passwords:[
-                        {validator:passwords,trigger:'blur' }
-                    ]
-                }
+
+
             }
         },
         methods:{
-            toggleMenu(item){
-                this.menutab.forEach(item=>{
-                    item.current=false;
-                })
-                item.current=true;
-                this.model=item.type;
-            },
-            submitForm(formName) {
-                this.$refs[formName].validate((valid) => {
-                    if (valid) {
-                        alert('submit!');
-                    } else {
-                        console.log('error submit!!');
-                        return false;
-                    }
-                });
-            },
-            resetForm(formName) {
-                this.$refs[formName].resetFields();
-            }
+
         }
     }
 </script>
