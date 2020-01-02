@@ -1,4 +1,3 @@
-
 <template>
     <div id="login">
 
@@ -44,6 +43,7 @@
     import {striptscript,validateEmail,validateCode,validatePass} from "utils/validate";
     import {isRef, onMounted, reactive, ref, toRefs} from "@vue/composition-api";
     import {GetSms, Login, Register} from "../../api/login";
+    import sha1 from 'js-sha1';
     export default {
         name: "index",
         setup(props,{root,refs}){
@@ -162,15 +162,26 @@
                 })
                     data.current=true;
                 model.value=data.type;
-                refs.ruleForm.resetFields();
+                //清理表单
+                resetFields();
                 clearCountDown();
             }
+            /*更新按钮状态*/
+            const updateBtnState=((params)=>{
+                yzmBtn.State=params.State;
+                yzmBtn.Text=params.Text;
+            })
+            /*清理表单*/
+            const resetFields=(()=>{
+                refs.ruleForm.resetFields();
+            })
             /*提交按钮*/
             const submitForm=formName=> {
                 refs[formName].validate((valid) => {
                     if (valid) {
                         let data={
                             username:ruleForm.username,
+                            //sha1(ruleForm.password)
                             password:ruleForm.password,
                             code:ruleForm.code
                         }
@@ -182,6 +193,7 @@
                         return false;
                     }
                 });
+
             }
             /*获取验证码*/
             const getSms=()=>{
@@ -193,8 +205,10 @@
                     root.$message.error('邮箱格式不正确');
                 }
                 else {
-                    yzmBtn.State=true;
-                    yzmBtn.Text='发送中'
+                    updateBtnState({
+                        State:true,
+                        Text:'发送中'
+                    })
                    setTimeout(()=>{
                        //发送验证码
                        GetSms({username:ruleForm.username,module:model.value}).then(res=>{
@@ -261,8 +275,10 @@
                     if(time === 0)
                     {
                      clearInterval(timer.value)
-                        yzmBtn.Text=`再次获取`
-                        yzmBtn.State=false
+                        updateBtnState({
+                            State:false,
+                            Text:'再次获取'
+                        })
                     }else {
                         time--;
                         yzmBtn.Text=`倒计时${time}秒`
@@ -271,8 +287,10 @@
             })
             /*清除定时器*/
             const clearCountDown=(()=>{
-                yzmBtn.State=false;
-                yzmBtn.Text='获取验证码';
+                updateBtnState({
+                    State:false,
+                    Text:'获取验证码'
+                });
                 clearInterval(timer.value)
             })
             return{
