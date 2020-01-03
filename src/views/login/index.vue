@@ -47,6 +47,7 @@
     export default {
         name: "index",
         setup(props,{root,refs}){
+
             /*声明验证函数*/
             /*密码验证*/
             let password = (rule, value, callback) => {
@@ -240,7 +241,10 @@
                             type: 'success'
                         });
                         //跳转路由
-
+                        root.$router.push({
+                            name:'Console',
+                            path:'/console'
+                        });
                     }
                 }).catch(err=>console.log(err))
 
