@@ -23,6 +23,7 @@ module.exports = {
             'views': path.resolve(__dirname, './src/views'),
             'data': path.resolve(__dirname, './src/data'),
               'utils': path.resolve(__dirname, './src/utils'),
+              'vue':'vue/dist/vue.js'
           }
         }
     },

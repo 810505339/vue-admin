@@ -8,6 +8,10 @@ import VueCompositionApi from '@vue/composition-api'
 Vue.config.productionTip = false;
 Vue.use(VueCompositionApi)
 Vue.use(ElementUI)
+
+Vue.component("dddd",{
+  template:"<div>132</div>"
+})
 new Vue({
   router,
   store,
