@@ -10,6 +10,18 @@ module.exports = {
      * webpack配置,see https://github.com/vuejs/vue-cli/blob/dev/docs/webpack.md
      **/
     chainWebpack: (config) => {
+        // 设置svg
+        const svgRule = config.module.rule('svg')
+        svgRule.uses.clear()
+        svgRule
+            .use('svg-sprite-loader')
+            .loader('svg-sprite-loader')
+            .options({
+                symbolId: 'icon-[name]',
+                include:["./src/icons"]
+            })
+
+
     },
     configureWebpack: (config) => {
         config.resolve = { // 配置解析别名
@@ -81,5 +93,8 @@ module.exports = {
     /**
      * 第三方插件配置
      */
-    pluginOptions: {}
+    pluginOptions: {
+
+
+    }
 }

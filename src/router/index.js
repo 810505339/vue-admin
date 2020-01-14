@@ -33,7 +33,8 @@ const routes = [
     component:layout,
     redirect:'index',
     meta:{
-      name:'控制台'
+      name:'控制台',
+      icon:'console'
     },
     children:[
       {
@@ -53,7 +54,8 @@ const routes = [
     component:layout,
 
     meta:{
-      name:'信息管理'
+      name:'信息管理',
+      icon:'info'
     },
     children:[
       {
@@ -80,7 +82,8 @@ const routes = [
     name: "User",
     component:layout,
     meta:{
-      name:'用户管理'
+      name:'用户管理',
+      icon:'user'
     },
     children:[
       {
@@ -100,6 +103,7 @@ const routes = [
 const router = new VueRouter({
   mode: "history",
   base: process.env.BASE_URL,
+  scrollBehavior: () => ({ x: 0, y: 0 }),
   routes
 });
 

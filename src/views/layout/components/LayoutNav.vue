@@ -9,27 +9,35 @@
                 background-color="transparent"
                 text-color="#fff"
                 active-text-color="#fff"
-                router>
+                router
+
+                collapse-transition
+        >
             <template  v-for="(item,index) in routes">
                 <el-submenu :index="item.path" v-if="!item.hidden" :key="item.id" >
                     <template slot="title" :hidden="item.hidden">
-                        <i class="el-icon-location"></i>
+                        <svg-icon :iconClass="item.meta.icon" :className="item.meta.icon" />
+
                         <span slot="title" >{{item.meta.name}}</span>
                     </template>
                     <el-menu-item :index="subItem.path" v-for="subItem in item.children" :key="subItem.id">{{subItem.meta.name}}</el-menu-item>
                 </el-submenu>
             </template>
         </el-menu>
+
     </div>
 </template>
 
 <script>
-    import {reactive, ref} from '@vue/composition-api'
+    import {reactive, ref,computed} from '@vue/composition-api'
     export default {
         name: "LayoutNav",
-        setup(props,{root,}){
+        setup(props,{root}){
           //data数组
-            const isCollapse=ref(false);
+            const isCollapse=computed(()=>{
+                console.log(root.$store.state.isCollapse)
+                return  root.$store.state.isCollapse
+            });
             const routes=reactive(root.$router.options.routes);
             //侧边栏展开事件
             const handleOpen=((key,keyPath)=>{
@@ -62,5 +70,14 @@
      left: 0;
      height: 100vh;
      background: #344a5f;
+    .svg-icon{
+        font-size: 20px;
+        margin-right: 10px;
+
+        fill: currentColor;
+        color:#ffffff ;
+
+
+    }
 }
 </style>
