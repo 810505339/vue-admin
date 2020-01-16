@@ -9,6 +9,7 @@ Vue.config.productionTip = false;
 Vue.use(VueCompositionApi)
 Vue.use(ElementUI)
 import "@/icons";  //引入全局模板
+import "@/router/premit";
 
 
 new Vue({

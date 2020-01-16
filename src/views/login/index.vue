@@ -232,7 +232,7 @@
             }
             /*调用登录接口*/
             const login=((data)=>{
-                Login(data).then(res=>{
+                root.$store.dispatch('app/login',data).then(res=>{
                     if(res.resCode==0)
                     {
                         //登录成功
@@ -247,6 +247,22 @@
                         });
                     }
                 }).catch(err=>console.log(err))
+
+                // Login(data).then(res=>{
+                //     if(res.resCode==0)
+                //     {
+                //         //登录成功
+                //         root.$message({
+                //             message: res.message,
+                //             type: 'success'
+                //         });
+                //         //跳转路由
+                //         root.$router.push({
+                //             name:'Console',
+                //             path:'/console'
+                //         });
+                //     }
+                // }).catch(err=>console.log(err))
 
             })
             /*调用注册接口*/

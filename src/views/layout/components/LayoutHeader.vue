@@ -6,16 +6,16 @@
                     <svg-icon class-name="menu" icon-class="menu" @click.native="set_Collapse" />
                 </div>
             </el-col>
-            <el-col :span="3"style="min-width: 208px;">
-                <el-col :span="16" class="user-info">
+            <el-col :span="4"style="min-width: 300px;">
+                <el-col :span="18" class="user-info">
                     <el-col class="avatar"> <el-avatar :size="45" class=""
                                         :src="'https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png'"></el-avatar></el-col>
-                    <el-col>
-                        <label>管理员</label>
+                    <el-col style="min-width: 170px;">
+                        <label>{{userName}}</label>
                     </el-col>
                 </el-col>
-                <el-col :span="8" class="header-icon">
-                    <svg-icon class-name="exit" icon-class="exit"/>
+                <el-col :span="6" class="header-icon">
+                    <svg-icon class-name="exit" icon-class="exit" @click.native="exit()"/>
                 </el-col>
             </el-col>
         </el-row>
@@ -23,18 +23,37 @@
 </template>
 
 <script>
+    import {computed} from "@vue/composition-api";
+
     export default {
         name: "LayHeader",
 
         setup(props,{root}){
-           const set_Collapse=()=>{
-               console.log('aaa');
-               root.$store.commit('Set_Collapse');
+            const set_Collapse=()=>{
+               root.$store.commit('app/Set_Collapse');
+            }
+            const userName=computed(()=>{
+                return root.$store.state.app.userName
+            })
 
-           }
+            const exit=()=>{
+                return root.$store.dispatch('app/exit').then(()=>{
+
+                    root.$router.push({
+                        name:'Login',
+                        path:'/login'
+                    })
+                })
+
+            }
+
+
+            console.log(userName)
 
             return{
-                set_Collapse
+                set_Collapse,
+                userName,
+                exit
             }
         },
     }
@@ -71,11 +90,11 @@
         height: 100%;
         border-right: 1px solid #efefef;
         display: flex;
-        text-align: left;
+        text-align: center;
         .avatar{
             display: flex;
             align-items: center; /*定义body的元素垂直居中*/
-           /*   justify-content: center; 定义body的里的元素水平居中*/
+             justify-content: center; /*定义body的里的元素水平居中*/
         }
         + .header-icon {
 

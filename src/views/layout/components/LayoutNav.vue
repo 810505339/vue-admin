@@ -21,11 +21,12 @@
                         <svg-icon :iconClass="item.meta.icon" :className="item.meta.icon" />
                         <span slot="title" >{{item.meta.name}}</span>
                     </template>
+                    <el-menu-item-group>
                     <el-menu-item :index="subItem.path" v-for="subItem in item.children" :key="subItem.id">{{subItem.meta.name}}</el-menu-item>
+                    </el-menu-item-group>
                 </el-submenu>
             </template>
         </el-menu>
-
     </div>
 </template>
 
@@ -36,8 +37,8 @@
         setup(props,{root}){
           //data数组
             const isCollapse=computed(()=>{
-                console.log(root.$store.state.isCollapse)
-                return  root.$store.state.isCollapse
+                console.log(root.$store.state.app.isCollapse)
+                return  root.$store.state.app.isCollapse
             });
             const routes=reactive(root.$router.options.routes);
             //侧边栏展开事件

@@ -75,7 +75,7 @@ module.exports = {
         proxy:{
 
                 '/api': {
-                    target: 'http://www.web-jshtml.cn/productapi',
+                    target: 'http://www.web-jshtml.cn/productapi/token',
                     changeOrigin: true,
                     pathRewrite: {
                         '^/api': '/'
