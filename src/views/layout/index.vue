@@ -1,5 +1,5 @@
 <template>
-<div id="layout">
+<div id="layout" :class="[isCollapse?'close':'open']">
     <LayoutHeader />
     <LayoutMain />
     <LayoutNav />
@@ -10,6 +10,7 @@
     import LayoutHeader from "views/layout/components/LayoutHeader"
     import LayoutMain from "views/layout/components/LayoutMain"
     import LayoutNav from "views/layout/components/LayoutNav"
+    import {computed} from "@vue/composition-api";
     export default {
         name: "index",
         components:{
@@ -17,8 +18,13 @@
             LayoutMain,
             LayoutNav
         },
-        setup(){
-
+        setup(props,{root}){
+            const isCollapse=computed(()=>{
+                return  root.$store.state.isCollapse
+            });
+            return {
+                isCollapse
+            }
         },
 
     }

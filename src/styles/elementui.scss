@@ -4,9 +4,41 @@
     background-color: rgba(245,100,100,1) !important;
   }
 }
-.el-submenu .el-menu-item{
+
+ .el-submenu .el-menu-item{
   &.is-active{
     background-color: rgba(245,100,100,.2) !important;
   }
   font-size: 14px;
+}
+
+.el-menu-item:focus, .el-menu-item:hover{
+  background-color: rgba(255,255,255,.1) !important;
+}
+
+
+.el-menu--vertical{
+  .el-menu-item{
+    background-color: #344a5f !important;
+  }
+}
+.el-menu{
+  .is-active{
+    background-color: rgba(245,100,100,1) !important;
+  }
+}
+
+.el-menu--vertical{
+  .is-active{
+    background-color: rgba(245,200,200,1) !important;
+  }
+}
+
+
+.el-submenu__title:hover{
+  background-color: rgba(255,255,255,.1) !important;
+}
+
+.el-menu--popup{
+  padding: 0;
 }
