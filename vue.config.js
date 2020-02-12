@@ -75,14 +75,14 @@ module.exports = {
         proxy:{
 
                 '/api': {
-                    target: 'http://www.web-jshtml.cn/productapi/token',
+                    target: 'http://www.web-jshtml.cn/dependenciesapi/token',
                     changeOrigin: true,
                     pathRewrite: {
                         '^/api': '/'
                     }
                 }
         },
-        overlay: { // 全屏模式下是否显示脚本错误
+        overlay: { // 全屏模式下是否显示脚本错误DRFC
             warnings: true,
             errors: true
         },

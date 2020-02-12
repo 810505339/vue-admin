@@ -6,7 +6,7 @@
                     <svg-icon class-name="menu" icon-class="menu" @click.native="set_Collapse" />
                 </div>
             </el-col>
-            <el-col :span="4"style="min-width: 300px;">
+            <el-col :span="4" style="min-width: 300px;">
                 <el-col :span="18" class="user-info">
                     <el-col class="avatar"> <el-avatar :size="45" class=""
                                         :src="'https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png'"></el-avatar></el-col>
