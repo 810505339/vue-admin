@@ -15,7 +15,7 @@
 <style lang="scss" scoped>
     @import "@/styles/config.scss";
     #main-wrap {
-        height: calc(100vh - 105px);
+        min-height:calc(100vh - 105px);;
         margin: 105px 30px 0 ($NavMenuWidth + 30px);
         -webkit-box-sizing: border-box;
         background: #ffffff;

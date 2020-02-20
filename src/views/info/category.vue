@@ -3,9 +3,32 @@
         <el-button type="danger">添加一级分类</el-button>
         <div>
             <el-row :gutter="30">
-                <el-col :span="8">
+                <el-col :span="8" class="category-warp">
                     <div class="category">
-                        <h4>新闻</h4>
+                        <h4>
+                            <svg-icon icon-class="add"></svg-icon>
+                            新闻
+                            <div class="button-group">
+                                <el-button size="mini" type="danger" round>编辑</el-button>
+                                <el-button size="mini" type="success" round>添加子类</el-button>
+                                <el-button size="mini"  round >删除</el-button>
+                            </div>
+                        </h4>
+                        <ul>
+                            <li>国内</li>
+                            <li>国内</li>
+                            <li>国内</li>
+                            <li>国内</li>
+                            <li>国内</li>
+                            <li>国内</li>
+
+                        </ul>
+                    </div>
+                    <div class="category">
+                        <h4>
+                            <svg-icon icon-class="add"></svg-icon>
+                            新闻
+                        </h4>
                         <ul>
                             <li>国内</li>
                             <li>国内</li>
@@ -30,23 +53,75 @@
 </script>
 
 <style lang="scss" scoped>
-.category{
-    line-height: 44px;
-    h4{
-        padding-left: 40px;
+    @import "@/styles/config.scss";
+    .category-warp{
+        cursor: pointer;
+        div:first-child {
+            &:before{
+                top: 20px;
+            }
+        }
+        div:last-child{
+            &:before{
+                bottom: 20px;
+            }
+        }
     }
-    li{
-        margin-left: 20px;
-        padding-left: 40px;
+
+    .category {
+        line-height: 44px;
         position: relative;
-        &:before{
+
+        &:before {
             content: '';
             position: absolute;
             width: 32px;
-            border-bottom: 1px dotted #000;
-            left: 0;
-            top: 50%;
+            border-left: 1px dotted #000;
+            left: 22px;
+            top: 0;
+            bottom: 0;
+        }
+
+        h4 {
+            padding-left: 40px;
+            position: relative;
+
+            svg {
+                position: absolute;
+                top: 12px;
+                left: 13px;
+                font-size: 17px;
+                border: 1px solid #000;
+                background-color: white;
+            }
+            .button-group{
+                position: absolute;
+                z-index: 2;
+                right: 10px;
+                top: 0;
+            }
+        }
+
+        li {
+            margin-left: 24px;
+            padding-left: 36px;
+            position: relative;
+
+            &:before {
+                content: '';
+                position: absolute;
+                width: 32px;
+                border-bottom: 1px dotted #000;
+                left: 0;
+                top: 50%;
+            }
         }
     }
-}
+    li,h4{
+        &:hover{
+            @include webkit(transition, all .5s ease 0);
+            background-color: #f3f3f3;
+        }
+    }
+
 </style>
