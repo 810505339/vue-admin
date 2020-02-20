@@ -51,3 +51,33 @@ div.el-table {
 .el-menu--popup{
   padding: 0;
 }
+
+/*dialog*/
+.el-dialog{
+  .el-dialog__body{
+    padding: 47px;
+
+  }
+  /*重置最后一个的*/
+  .el-form-item:last-child{
+    margin: 0;
+  }
+  .el-dialog__footer{
+    text-align: center;
+    padding-bottom: 50px;
+    .el-button{
+      width: 150px;
+      font-size: 15px;
+    }
+    .el-button+.el-button{
+      margin-left:22px;
+    }
+  }
+
+  .overview{
+    .el-textarea__inner{
+      height: 160px;
+    }
+  }
+
+}

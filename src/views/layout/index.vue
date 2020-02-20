@@ -1,9 +1,9 @@
 <template>
-<div id="layout" :class="[isCollapse?'close':'open']">
-    <LayoutHeader />
-    <LayoutMain />
-    <LayoutNav />
-</div>
+    <div id="layout" :class="[isCollapse?'close':'open']">
+        <LayoutHeader/>
+        <LayoutMain/>
+        <LayoutNav/>
+    </div>
 </template>
 
 <script>
@@ -11,16 +11,17 @@
     import LayoutMain from "views/layout/components/LayoutMain"
     import LayoutNav from "views/layout/components/LayoutNav"
     import {computed} from "@vue/composition-api";
+
     export default {
         name: "index",
-        components:{
+        components: {
             LayoutHeader,
             LayoutMain,
             LayoutNav
         },
-        setup(props,{root}){
-            const isCollapse=computed(()=>{
-                return  root.$store.state.app.isCollapse
+        setup(props, {root}) {
+            const isCollapse = computed(() => {
+                return root.$store.state.app.isCollapse
             });
             return {
                 isCollapse
@@ -31,8 +32,8 @@
 </script>
 
 <style lang="scss" scoped>
-#layout{
-    background: #f7f7f7;
-}
+    #layout {
+        background: #f7f7f7;
+    }
 
 </style>
