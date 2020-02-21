@@ -11,11 +11,17 @@
                             <div class="button-group">
                                 <el-button size="mini" type="danger" round>编辑</el-button>
                                 <el-button size="mini" type="success" round>添加子类</el-button>
-                                <el-button size="mini"  round >删除</el-button>
+                                <el-button size="mini" round>删除</el-button>
                             </div>
                         </h4>
                         <ul>
-                            <li>国内</li>
+                            <li>
+                                国内
+                                <div class="button-group">
+                                    <el-button size="mini" type="danger" round>编辑</el-button>
+                                    <el-button size="mini"  round >删除</el-button>
+                                </div>
+                            </li>
                             <li>国内</li>
                             <li>国内</li>
                             <li>国内</li>
@@ -40,7 +46,11 @@
                         </ul>
                     </div>
                 </el-col>
-                <el-col :span="16">asdasd</el-col>
+                <el-col :span="16">
+                    <h4 class="menu-title">
+                    一级分类编辑
+                    </h4>
+                </el-col>
             </el-row>
         </div>
     </div>
@@ -54,15 +64,22 @@
 
 <style lang="scss" scoped>
     @import "@/styles/config.scss";
-    .category-warp{
+    .menu-title{
+        line-height: 44px;
+        background-color: #f3f3f3;
+        padding-left: 22px;
+    }
+    .category-warp {
         cursor: pointer;
+
         div:first-child {
-            &:before{
+            &:before {
                 top: 20px;
             }
         }
-        div:last-child{
-            &:before{
+
+        div:last-child {
+            &:before {
                 bottom: 20px;
             }
         }
@@ -94,12 +111,8 @@
                 border: 1px solid #000;
                 background-color: white;
             }
-            .button-group{
-                position: absolute;
-                z-index: 2;
-                right: 10px;
-                top: 0;
-            }
+
+
         }
 
         li {
@@ -121,6 +134,18 @@
         &:hover{
             @include webkit(transition, all .5s ease 0);
             background-color: #f3f3f3;
+        }
+    }
+
+    .button-group {
+        display: none;
+        position: absolute;
+        z-index: 2;
+        right: 10px;
+        top: 0;
+
+        button {
+            font-size: 12px;
         }
     }
 
