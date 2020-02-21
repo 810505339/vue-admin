@@ -26,7 +26,7 @@
                 <el-form-item prop="code"  class="item-from">
                     <label for="code">验证码</label>
                     <el-row :gutter="10">
-                        <el-col :span="15"><el-input id="code" v-model="ruleForm.code"  autocomplete="off"  minlength="6" maxlength="6"></el-input></el-col>
+                        <el-col :span="15"><el-input @keyup.13.native="submitForm('ruleForm')" id="code" v-model="ruleForm.code"  autocomplete="off"  minlength="6" maxlength="6"></el-input></el-col>
                         <el-col :span="9"><el-button type="success" class="block" @click="getSms()" :disabled="yzmBtn.State">{{yzmBtn.Text}}</el-button></el-col>
                     </el-row>
 
