@@ -1,66 +1,77 @@
 <template>
     <div>
         <!--导航栏-->
-        <el-form :inline="true" class="demo-form-inline" style="margin-bottom: 50px">
-            <el-form-item label="类型：" label-width="60px">
-                <el-select v-model="InfoType" placeholder="请选择" class="InfoType">
-                    <el-option
-                            v-for="item in InfoTypes"
-                            :key="item.value"
-                            :label="item.label"
-                            :value="item.value">
-                    </el-option>
-                </el-select>
-            </el-form-item>
-            <el-form-item label="日期：" label-width="60px">
-                <el-date-picker style="max-width: 330px"
-                                v-model="Datetime"
-                                type="datetimerange"
-                                :picker-options="pickerOptions"
-                                range-separator="至"
-                                start-placeholder="开始日期"
-                                end-placeholder="结束日期"
-                                align="right">
-                </el-date-picker>
-            </el-form-item>
-            <el-form-item label="关键字：" label-width="75px">
-                <el-select v-model="keyword" placeholder="请选择" class="keyWord">
-                    <el-option
-                            v-for="item in keywords"
-                            :key="item.value"
-                            :label="item.label"
-                            :value="item.value">
-                    </el-option>
-                </el-select>
-            </el-form-item>
-            <el-form-item>
-                <el-input v-model="keyWordInput" placeholder="请输入内容" clearable></el-input>
-            </el-form-item>
-            <el-form-item>
-                <el-button type="danger">搜索</el-button>
-                <el-button type="danger" @click="dialog_info = !dialog_info">新增</el-button>
-            </el-form-item>
+        <el-form :inline="true"  class="demo-form-inline" style="margin-bottom: 50px">
+                <el-row type="flex"  justify="center" class="row-bg" :gutter="50">
+                    <el-col :span="3" >
+                        <el-form-item label="类型：" label-width="60px" >
+                            <el-select v-model="InfoType" placeholder="请选择" style="width:110%" class="InfoType" >
+                                <el-option
+                                        v-for="item in InfoTypes"
+                                        :key="item.value"
+                                        :label="item.label"
+                                        :value="item.value">
+                                </el-option>
+                            </el-select>
+                        </el-form-item>
+                    </el-col>
+
+                    <el-col :span="9" >
+                        <el-form-item label="日期："   label-width="60px">
+                            <el-date-picker style="width:100%"
+                                    v-model="Datetime"
+                                    type="datetimerange"
+                                    :picker-options="pickerOptions"
+                                    range-separator="至"
+                                    start-placeholder="开始日期"
+                                    end-placeholder="结束日期"
+                                    align="right">
+                            </el-date-picker>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="11">
+                        <el-form-item  label="关键字：" label-width="75px">
+                            <el-select v-model="keyword" placeholder="请选择" style="padding-right:10px"  class="keyWord">
+                                <el-option
+                                        v-for="item in keywords"
+                                        :key="item.value"
+                                        :label="item.label"
+                                        :value="item.value">
+                                </el-option>
+                            </el-select>
+                            <el-form-item style="height:50px;">
+                                <el-input  v-model="keyWordInput" placeholder="请输入内容" clearable></el-input>
+                            </el-form-item>
+                            <el-form-item style="margin-top:-2px;">
+                                <el-button  type="danger" >搜索</el-button>
+                                <el-button  type="danger" @click="dialog_info = true">新增</el-button>
+                            </el-form-item>
+                        </el-form-item>
+                    </el-col>
+                </el-row>
+
         </el-form>
         <!--表格数据-->
         <el-table :data="tableData" style="width:100%;" border>
             <el-table-column type="selection"></el-table-column>
             <el-table-column prop="title" label="标题"></el-table-column>
             <el-table-column prop="category" label="类别" width="130"></el-table-column>
-            <el-table-column prop="date" label="日期" width="237"></el-table-column>
+            <el-table-column prop="date" label="日期"  width="237"></el-table-column>
             <el-table-column prop="user" label="管理人" width="115"></el-table-column>
-            <el-table-column label="操作" width="160">
+            <el-table-column  label="操作" width="160">
                 <template slot-scope="scope">
-                    <el-button size="mini" type="success" @click="dialog_info=true">编辑</el-button>
-                    <el-button size="mini" type="danger" @click="deleteInfo">删除</el-button>
+                    <el-button size="mini" type="success">编辑</el-button>
+                    <el-button size="mini" type="danger">删除</el-button>
                 </template>
             </el-table-column>
         </el-table>
         <!--分页控件-->
-        <el-row type="flex" justify="space-between">
-            <el-col>
-                <el-button plain @click="deleteAll">批量删除</el-button>
+
+        <el-row type="flex" justify="center" style="margin-top:20px">
+            <el-col :span="4" >
+                <el-button plain>批量删除</el-button>
             </el-col>
-            <el-col>
+            <el-col :span="16" style="margin-top:10px;">
                 <el-pagination
                         @size-change="handleSizeChange"
                         @current-change="handleCurrentChange"

@@ -4,7 +4,7 @@ Vue.use(VueRouter);
 const login=()=>import('views/login')
 const layout=()=>import('views/layout')
 const consoleIndex=()=>import('views/console')
-const infoIndex=()=>import('views/info')
+const UserInfo=()=>import('views/info/UserInfo')
 const category=()=>import('views/info/category')
 const UserIndex=()=>import('views/user')
 
@@ -59,9 +59,9 @@ const routes = [
     },
     children:[
       {
-        path:'/infoindex',
-        name:'InfoIndex',
-        component:infoIndex,
+        path:'/userinfo',
+        name:'UserInfo',
+        component:UserInfo,
         meta:{
           name:'信息列表'
         }
