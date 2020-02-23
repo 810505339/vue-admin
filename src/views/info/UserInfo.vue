@@ -234,11 +234,11 @@
                 keyword,
                 keyWordInput,
                 dialog_info,
+                loading,
                 handleSizeChange,
                 handleCurrentChange,
                 deleteInfo,
                 deleteAll,
-                loading
             }
         }
     }
