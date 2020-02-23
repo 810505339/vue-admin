@@ -1,6 +1,6 @@
 <template>
     <div id="category">
-        <el-button type="danger">添加一级分类</el-button>
+        <el-button type="danger" @click="category=!category">添加一级分类</el-button>
         <hr style="margin:30px -30px 30px -30px;border:1px solid #DCDFE6;">
         <div>
             <el-row :gutter="30">
@@ -51,16 +51,15 @@
                     <h4 class="menu-title">
                         一级分类编辑
                     </h4>
-                    <el-form label-width="120px" :model="form" class="form-warp">
-                        <el-form-item label="一级分类名称：">
+                    <el-form label-width="120px" :model="form" :rules="rules"  ref="ruleForm"  class="form-warp">
+                        <el-form-item label="一级分类名称：" v-if="category" prop="categoryName">
                             <el-input v-model="form.categoryName"></el-input>
                         </el-form-item>
-                        <el-form-item label="二级分类名称：">
+                        <el-form-item label="二级分类名称：" v-else prop="secCategoryName">
                             <el-input v-model="form.secCategoryName"></el-input>
                         </el-form-item>
                         <el-form-item>
-                            <el-button type="danger" @click="submit">确定</el-button>
-
+                            <el-button type="danger" @click="submit('ruleForm')">确定</el-button>
                         </el-form-item>
                     </el-form>
                 </el-col>
@@ -68,29 +67,73 @@
         </div>
     </div>
 </template>
-
 <script>
     import {reactive, ref} from "@vue/composition-api"
     import {AddFirstCategory} from "@/api/news"
+    import {striptscript} from "@/utils/validate"
 
     export default {
         name: "category",
-        setup(props) {
+        setup(props, {root, refs}) {
             const form = reactive({
                 categoryName: '',
                 secCategoryName: ''
             })
-            const submit=()=>{
-                AddFirstCategory().then(res=>{
+            const rules = reactive({
+                categoryName: [
+                    {validator: vcategoryName, trigger: 'blur'}
+                ],
+                secCategoryName: [
+                    {validator: vsecCategoryName, trigger: 'blur'}
+                ],
+            })
+            const category = ref(false)
+            const vcategoryName = (rule, value, callback) => {
+                if (!value) {
+                    callback(new Error('请输入一级分类'));
+                } else if (striptscript(value)) {
+                    callback(new Error('一级分类不正确'));
 
-                })
-            }
+                } else {
+                    callback();
+                }
+            };
+            const vsecCategoryName = (rule, value, callback) => {
+                if (!value) {
+                    callback(new Error('请输入二级分类分类'));
+                } else if (striptscript(value)) {
+                    callback(new Error('二级分类不正确'));
+
+                } else {
+                    callback();
+                }
+            };
+            const submit = formName=> {refs[formName].validate((valid) => {
+                console.log(valid);
+                if (valid) {
+                         alert('submit!');
+                     } else {
+                         console.log('error submit!!');
+                         return false;
+                     }
+
+                 /*   AddFirstCategory({categoryName: form.categoryName}).then(res => {
+                        if (res.resCode === 0)
+                            root.$message({message: res.message, type: 'success'})
+                    }).catch(err => console.log(err))*/
+
+            })}
+
+
             return {
                 form,
-                submit
+                category,
+                submit,
+                rules
             }
 
         }
+
     }
 </script>
 
