@@ -52,7 +52,7 @@
 
         </el-form>
         <!--表格数据-->
-        <el-table :data="tableData" style="width:100%;" border>
+        <el-table :data="tableData" style="width:100%;" v-loading="loading" border>
             <el-table-column type="selection"></el-table-column>
             <el-table-column prop="title" label="标题"></el-table-column>
             <el-table-column prop="category" label="类别" width="130"></el-table-column>
@@ -96,6 +96,8 @@
     export default {
         components: {DiaLogInfo},
         setup(props, {root}) {
+            /*加载提示*/
+            const loading=ref(false)
             /*类型选择数据*/
             const InfoTypes = reactive([{
                 value: '国际信息',
@@ -145,6 +147,9 @@
                     }
                 }]
             })
+
+            //加载 开始
+            loading.value=true;
             /*表格数据*/
             const tableData = reactive([{
                 title: '二狗11111111111111111111111111111111111111111111111',
@@ -158,6 +163,9 @@
                     date: '2019-10-01',
                     user: '二狗'
                 }])
+            //加载 结束
+            loading.value=false;
+
             /*类型选择数据显示*/
             const InfoType = ref('')
             /*时间选择*/
@@ -168,7 +176,6 @@
             const keyWordInput = ref('')
             /*新增按钮操作*/
             const dialog_info = ref(false)
-
             const handleSizeChange = (val) => {
 
 
@@ -230,7 +237,8 @@
                 handleSizeChange,
                 handleCurrentChange,
                 deleteInfo,
-                deleteAll
+                deleteAll,
+                loading
             }
         }
     }
