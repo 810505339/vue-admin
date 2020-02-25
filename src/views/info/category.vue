@@ -1,6 +1,6 @@
 <template>
     <div id="category">
-        <el-button type="danger" @click="category=!category">添加一级分类</el-button>
+        <el-button type="danger" @click="btnAddFirst({level: 'addCategory'})">添加一级分类</el-button>
         <hr style="margin:30px -30px 30px -30px;border:1px solid #DCDFE6;">
         <div>
             <el-row :gutter="30">
@@ -10,9 +10,11 @@
                             <svg-icon icon-class="add"></svg-icon>
                             {{firstItem.category_name}}
                             <div class="button-group">
-                                <el-button size="mini" type="danger" round>编辑</el-button>
-                                <el-button size="mini" type="success" round>添加子类</el-button>
-                                <el-button size="mini" round>删除</el-button>
+                                <el-button size="mini" type="danger" round @click="editCategory({data:firstItem,level:'firstCategory'})">编辑
+                                </el-button>
+                                <el-button size="mini" type="success" round @click="btnAddSecond()">添加子类
+                                </el-button>
+                                <el-button size="mini" round @click="btnDeleteCategory(firstItem.id)">删除</el-button>
                             </div>
                         </h4>
                         <ul v-if="firstItem.children">
@@ -28,33 +30,35 @@
                 </el-col>
                 <el-col :span="16">
                     <h4 class="menu-title">
-                        一级分类编辑
+                        分类编辑
                     </h4>
-                    <el-form label-width="120px" :model="form" :rules="rules" ref="ruleForm" class="form-warp">
-                        <el-form-item label="一级分类名称：" v-if="category" prop="categoryName">
+                    <el-form label-width="120px" :model="form" :rules="rules" ref="ruleForm" class="form-warp"
+                             :style="{'display':(formState ? 'block' : 'none')}">
+                        <el-form-item label="一级分类名称：" v-if="categoryDisabled" prop="categoryName">
                             <el-input v-model="form.categoryName"></el-input>
                         </el-form-item>
                         <el-form-item label="二级分类名称：" v-else prop="secCategoryName">
                             <el-input v-model="form.secCategoryName"></el-input>
                         </el-form-item>
                         <el-form-item>
-                            <el-button type="danger" @click="submit('ruleForm')" :loading="btnSubmitState">确定</el-button>
+                            <el-button type="danger" @click="submit('ruleForm')" :loading="btnSubmitState">确定
+                            </el-button>
                         </el-form-item>
                     </el-form>
                 </el-col>
             </el-row>
         </div>
-        <div>{{categorys}}123</div>
     </div>
 </template>
 <script>
     import {reactive, ref, onMounted} from "@vue/composition-api"
-    import {AddFirstCategory, GetCategory} from "@/api/news"
+    import {AddFirstCategory, GetCategory, deleteCategory} from "@/api/news"
     import {striptscript} from "@/utils/validate"
+    import {Message} from "element-ui";
 
     export default {
         name: "category",
-        setup(props, {root, refs}) {
+        setup: function (props, {root, refs}) {
             /*分类提交数据 reactive*/
             const form = reactive({
                 categoryName: '',
@@ -69,10 +73,12 @@
                 ],
             })
             /*分类信息*/
-            let categorys = reactive({item:[]})
+            let categorys = reactive({item: []});
             /*ref*/
-            const category = ref(false)
-            let btnSubmitState=ref(false)
+            let categoryDisabled = ref(false);
+            let btnSubmitState = ref(false);
+            let formState = ref(false);
+            let btnsubmitType = ref('');
             /*验证第一级分类*/
             let categoryName = (rule, value, callback) => {
                 form.categoryName = striptscript(value); //过滤一次
@@ -105,18 +111,17 @@
                     if (valid) {
                         /*这是提交一级分类*/
                         //把按钮变为loading状态
-                        btnSubmitState.value=true;
+                        btnSubmitState.value = true;
                         AddFirstCategory({categoryName: form.categoryName}).then(res => {
-                            if (res.resCode === 0)
-                            {
+                            if (res.resCode === 0) {
                                 root.$message({message: res.message, type: 'success'});
                                 //添加成功需要把返回的数据重新添加到信息分类里面
                                 categorys.item.push(res.data);
 
                             }
-                            btnSubmitState.value=false
+                            btnSubmitState.value = false
                             refs[formName].resetFields()
-                        }).catch(err =>  btnSubmitState.value=false)
+                        }).catch(err => btnSubmitState.value = false)
                     } else {
 
                         return false;
@@ -125,16 +130,61 @@
 
                 })
             }
+            /*显示编辑菜单*/
+            const showFirstCategory=()=>{
+                categoryDisabled.value = true;
+                formState.value = true;
+            }
+            /*添加一级分类按钮*/
+            const btnAddFirst = (Item) => {
+                showFirstCategory()
+                form.categoryName='';
+                btnsubmitType.value=Item.level;
+            }
+
+            /*添加二级级分类按钮*/
+            const btnAddSecond = () => {
+                categoryDisabled.value = false;
+                formState.value = true;
+            }
+            /*删除分类接口*/
+            const Deleteconfirm = (categoryId) => {
+                deleteCategory({categoryId: categoryId}).then(res => {
+                    if (res.resCode == 0) {
+                        //进行元素的删除
+                        let index = categorys.item.findIndex(item => item.id == categoryId);
+                        categorys.item.splice(index, 1);
+                    }
+                }).catch(err => {
+                    console.log(err)
+                })
+            }
+            /*删除分类*/
+            const btnDeleteCategory = (categoryId) => {
+
+                root.confirm({
+                    message: '此操作将删除一级分类是否继续?',
+                    center: true,
+                    thenFn: Deleteconfirm,
+                    catchFn: () => {
+                        categoryId = '';
+                    },
+                    id: categoryId,
+                });
+            }
+            /*修改分类信息*/
+            const editCategory = (firstItem) => {
+                showFirstCategory();
+                form.categoryName = firstItem.data.category_name;
+                btnsubmitType.value=firstItem.level;
+            }
             /*获取分类信息*/
             const getCategory = () => {
+
                 GetCategory({}).then(res => {
-                    if(res.resCode==0)
-                    {
-                        categorys.item=res.data.data;
+                    if (res.resCode == 0) {
+                        categorys.item = res.data.data;
                         console.log(categorys);
-                    }else
-                    {
-                        root.$message();
                     }
 
                 }).catch(err => {
@@ -149,11 +199,16 @@
 
             return {
                 form,
-                category,
+                categoryDisabled,
                 submit,
                 rules,
                 categorys,
-                btnSubmitState
+                btnSubmitState,
+                formState,
+                btnAddFirst,
+                btnAddSecond,
+                btnDeleteCategory,
+                editCategory
             }
 
         }
@@ -236,7 +291,8 @@
         &:hover {
             @include webkit(transition, all .5s ease 0);
             background-color: #f3f3f3;
-            .button-group{
+
+            .button-group {
                 display: block;
             }
 
@@ -264,5 +320,6 @@
 
         }
     }
+
 
 </style>

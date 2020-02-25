@@ -15,3 +15,20 @@ export function GetCategory(data) {
         data
     }).then(res=> Promise.resolve(res.data)).catch(err=>Promise.reject(err))
 }
+/*删除分类*/
+export function deleteCategory(data) {
+    return server.request({
+        method:'post',
+        url:'/news/deleteCategory/',
+        data
+    }).then(res=>Promise.resolve(res.data)).catch(err=>Promise.resolve(err))
+
+}
+/*修改分类*/
+export function editCategory(data) {
+    return server.request({
+        method:'post',
+        url:'/news/editCategory/',
+        data
+    }).then(res=>Promise.resolve(res.data)).catch(err=>Promise.resolve(err))
+}
