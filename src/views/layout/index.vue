@@ -3,6 +3,7 @@
         <LayoutHeader/>
         <LayoutMain/>
         <LayoutNav/>
+
     </div>
 </template>
 
@@ -21,10 +22,12 @@
         },
         setup(props, {root}) {
             const isCollapse = computed(() => {
+                console.log(root.$store.state)
                 return root.$store.state.app.isCollapse
             });
+
             return {
-                isCollapse
+                isCollapse,
             }
         },
 

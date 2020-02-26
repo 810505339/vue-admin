@@ -3,14 +3,14 @@
         <!--导航栏-->
         <el-form :inline="true"  class="demo-form-inline" style="margin-bottom: 50px">
                 <el-row type="flex"  justify="center" class="row-bg" :gutter="50">
-                    <el-col :span="3" >
-                        <el-form-item label="类型：" label-width="60px" >
+                    <el-col :span="4" >
+                        <el-form-item label="分类：" label-width="60px">
                             <el-select v-model="InfoType" placeholder="请选择" style="width:110%" class="InfoType" >
                                 <el-option
-                                        v-for="item in InfoTypes"
-                                        :key="item.value"
-                                        :label="item.label"
-                                        :value="item.value">
+                                        v-for="item in InfoTypes.category"
+                                        :key="item.id"
+                                        :label="item.category_name"
+                                        :value="item.id">
                                 </el-option>
                             </el-select>
                         </el-form-item>
@@ -89,9 +89,10 @@
 </template>
 
 <script>
-    import DiaLogInfo from '@/views/info/dialog/dialoginfo'
-    import {reactive, ref, watch} from '@vue/composition-api'
+    import DiaLogInfo from '@/views/info/dialog/dialoginfo';
+    import {onMounted, reactive, ref, watch} from '@vue/composition-api';
     import {global_3} from "../../utils/global3.0";
+    import {GetCategory} from "@/api/news"
 
     export default {
         components: {DiaLogInfo},
@@ -99,16 +100,7 @@
             /*加载提示*/
             const loading=ref(false)
             /*类型选择数据*/
-            const InfoTypes = reactive([{
-                value: '国际信息',
-                label: '国际信息'
-            }, {
-                value: '国内信息',
-                label: '国内信息'
-            }, {
-                value: '行业信息',
-                label: '行业信息'
-            }])
+            const InfoTypes = reactive({category:[]})
             /*关键字数组*/
             const keywords = reactive([
                 {
@@ -224,6 +216,23 @@
                  });*/
 
             }
+
+            /*获取分类列表*/
+            const GetCategoryApi=()=>{
+                GetCategory({}).then(res=>{
+                    if (res.resCode == 0) {
+                        InfoTypes.category=res.data.data;
+                        console.log(res.data.data);
+                    }
+                }).catch(err=>{
+                    console.log(err);
+                })
+            };
+
+            onMounted(()=>{
+                GetCategoryApi();
+            });
+
             return {
                 InfoTypes,
                 InfoType,

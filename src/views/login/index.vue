@@ -42,7 +42,9 @@
 <script>
     import {striptscript,validateEmail,validateCode,validatePass} from "utils/validate";
     import {isRef, onMounted, reactive, ref, toRefs} from "@vue/composition-api";
-    import {GetSms, Login, Register} from "../../api/login";
+    import Cookies from 'js-cookie';
+    import {GetSms, Login, Register} from "@/api/login";
+
     import sha1 from 'js-sha1';
     export default {
         name: "index",
@@ -313,6 +315,8 @@
                 });
                 clearInterval(timer.value)
             })
+
+            const get = () => { Cookies.get('username'); }
             return{
                 toggleMenu,
                 submitForm,

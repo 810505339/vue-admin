@@ -10,7 +10,7 @@
                             <svg-icon icon-class="add"></svg-icon>
                             {{firstItem.category_name}}
                             <div class="button-group">
-                                <el-button size="mini" type="danger" round @click="editCategory({data:firstItem,level:'firstCategory'})">编辑
+                                <el-button size="mini" type="danger" round @click="btneditCategory({data:firstItem,level:'firstCategory'})">编辑
                                 </el-button>
                                 <el-button size="mini" type="success" round @click="btnAddSecond()">添加子类
                                 </el-button>
@@ -52,7 +52,7 @@
 </template>
 <script>
     import {reactive, ref, onMounted} from "@vue/composition-api"
-    import {AddFirstCategory, GetCategory, deleteCategory} from "@/api/news"
+    import {AddFirstCategory, GetCategory, deleteCategory,editCategory} from "@/api/news"
     import {striptscript} from "@/utils/validate"
     import {Message} from "element-ui";
 
@@ -73,12 +73,12 @@
                 ],
             })
             /*分类信息*/
-            let categorys = reactive({item: []});
+            let categorys = reactive({item: [],current:[]});
             /*ref*/
             let categoryDisabled = ref(false);
             let btnSubmitState = ref(false);
             let formState = ref(false);
-            let btnsubmitType = ref('');
+            let btnSubmitType = ref('');
             /*验证第一级分类*/
             let categoryName = (rule, value, callback) => {
                 form.categoryName = striptscript(value); //过滤一次
@@ -111,17 +111,27 @@
                     if (valid) {
                         /*这是提交一级分类*/
                         //把按钮变为loading状态
+                        if(categorys.current.length<=0)
+                        {
+                            root.$message({message:'请填写分类！！！', type: 'warning'});
+                            return false;
+                        }
                         btnSubmitState.value = true;
-                        AddFirstCategory({categoryName: form.categoryName}).then(res => {
-                            if (res.resCode === 0) {
-                                root.$message({message: res.message, type: 'success'});
-                                //添加成功需要把返回的数据重新添加到信息分类里面
-                                categorys.item.push(res.data);
-
+                        if(btnSubmitType.value && btnSubmitType.value!=''){
+                            switch (btnSubmitType.value) {
+                                case'addCategory': //添加接口
+                                    console.log(btnSubmitType.value);
+                                    addCategoryApi();
+                                    break;
+                                case'firstCategory'://编辑一级分类
+                                    console.log('编辑一级分类');
+                                    editCategoryApi();
+                                    break;
+                                default:
+                                    Message.error("提交错误！");
+                                    btnSubmitState.value = false;
                             }
-                            btnSubmitState.value = false
-                            refs[formName].resetFields()
-                        }).catch(err => btnSubmitState.value = false)
+                        }
                     } else {
 
                         return false;
@@ -139,7 +149,44 @@
             const btnAddFirst = (Item) => {
                 showFirstCategory()
                 form.categoryName='';
-                btnsubmitType.value=Item.level;
+                btnSubmitType.value=Item.level;
+            }
+            /*添加一级分类接口调用*/
+            const addCategoryApi=()=>{
+                AddFirstCategory({categoryName: form.categoryName}).then(res => {
+                    if (res.resCode === 0) {
+                        root.$message({message: res.message, type: 'success'});
+                        //添加成功需要把返回的数据重新添加到信息分类里面
+                        categorys.item.push(res.data);
+
+                    }
+                    btnSubmitState.value = false
+                    refs['ruleForm'].resetFields()
+                }).catch(err => btnSubmitState.value = false)
+            }
+            /*编辑接口*/
+            const editCategoryApi=()=>{
+                let data={
+                    id:categorys.current.id,
+                    categoryName:form.categoryName  //修改后的名称
+                }
+                editCategory(data).then(res=>{
+                    if(res.resCode===0)
+                    {
+                        // let item=categorys.item.find(item=>item.id==categorys.current.id);
+                        // item.category_name=form.categoryName;
+                        categorys.current.category_name=res.data.data.categoryName;  //这里能够响应式是因为点击按钮传进来的值
+
+                        root.$message({message: res.message, type: 'success'});
+                        //添加成功需要把返回的数据重新添加到信息分类里面
+                    }
+                    categorys.current=[];
+                    btnSubmitState.value = false
+                    refs['ruleForm'].resetFields()
+
+                }).catch(err=>{
+                    btnSubmitState.value = false
+                })
             }
 
             /*添加二级级分类按钮*/
@@ -172,11 +219,13 @@
                     id: categoryId,
                 });
             }
-            /*修改分类信息*/
-            const editCategory = (firstItem) => {
+            /*修改分类信息按钮*/
+            const btneditCategory = (firstItem) => {
                 showFirstCategory();
+                categorys.current=firstItem.data;
                 form.categoryName = firstItem.data.category_name;
-                btnsubmitType.value=firstItem.level;
+                btnSubmitType.value=firstItem.level;
+                console.log(categorys.current);
             }
             /*获取分类信息*/
             const getCategory = () => {
@@ -208,7 +257,7 @@
                 btnAddFirst,
                 btnAddSecond,
                 btnDeleteCategory,
-                editCategory
+                btneditCategory
             }
 
         }
