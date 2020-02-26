@@ -122,8 +122,8 @@
                                     addCategoryApi();
                                     break;
                                 case'firstCategory'://编辑一级分类
-                                    console.log('编辑一级分类');
-                                    categorys.current.length > 0 ? editCategoryApi()
+                                    console.log( typeof categorys.current[0]);
+                                    categorys.current.id? editCategoryApi()
                                         : root.$message({message: '请填写分类！！！', type: 'warning'});
                                     break;
                                 default:
@@ -220,7 +220,7 @@
             /*修改分类信息按钮*/
             const btneditCategory = (firstItem) => {
                 showFirstCategory();
-                categorys.current = firstItem.data;
+                categorys.current=firstItem.data;
                 form.categoryName = firstItem.data.category_name;
                 btnSubmitType.value = firstItem.level;
                 console.log(categorys.current);
