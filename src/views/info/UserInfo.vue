@@ -7,7 +7,7 @@
                         <el-form-item label="分类：" label-width="60px">
                             <el-select v-model="InfoType" placeholder="请选择" style="width:110%" class="InfoType" >
                                 <el-option
-                                        v-for="item in InfoTypes.category"
+                                        v-for="item in options.category"
                                         :key="item.id"
                                         :label="item.category_name"
                                         :value="item.id">
@@ -93,14 +93,17 @@
     import {onMounted, reactive, ref, watch} from '@vue/composition-api';
     import {global_3} from "../../utils/global3.0";
     import {GetCategory} from "@/api/news"
+    import { common } from "@/api/common"
 
     export default {
         components: {DiaLogInfo},
         setup(props, {root}) {
             /*加载提示*/
             const loading=ref(false)
+
+            const { category, getInfoCategory}=common();
             /*类型选择数据*/
-            const InfoTypes = reactive({category:[]})
+            const options = reactive({category:[]})
             /*关键字数组*/
             const keywords = reactive([
                 {
@@ -188,7 +191,7 @@
                 // root.confirm({
                 //     message:'此操作将永久删除该文件, 是否继续?',
                 //     center:true
-                // });
+                // });options
 
                 confirm({
                     message: '此操作将批量删除, 是否继续?',
@@ -216,13 +219,21 @@
                  });*/
 
             }
+            /*生命周期*/
+            onMounted(()=>{
+                getInfoCategory();
+            })
+            /*watch*/
+            watch(()=>category.item,(value)=>{
+                options.category=value;
+            })
 
-            /*获取分类列表*/
+          /*  /!*获取分类列表*!/
             const GetCategoryApi=()=>{
                 GetCategory({}).then(res=>{
                     if (res.resCode == 0) {
                         InfoTypes.category=res.data.data;
-                        console.log(res.data.data);
+
                     }
                 }).catch(err=>{
                     console.log(err);
@@ -231,10 +242,10 @@
 
             onMounted(()=>{
                 GetCategoryApi();
-            });
+            });*/
 
             return {
-                InfoTypes,
+                options,
                 InfoType,
                 keywords,
                 tableData,

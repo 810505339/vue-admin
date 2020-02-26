@@ -51,10 +51,11 @@
     </div>
 </template>
 <script>
-    import {reactive, ref, onMounted} from "@vue/composition-api"
+    import {reactive, ref, onMounted, watch} from "@vue/composition-api"
     import {AddFirstCategory, GetCategory, deleteCategory,editCategory} from "@/api/news"
     import {striptscript} from "@/utils/validate"
     import {Message} from "element-ui";
+    import { common } from "@/api/common";
 
     export default {
         name: "category",
@@ -79,6 +80,7 @@
             let btnSubmitState = ref(false);
             let formState = ref(false);
             let btnSubmitType = ref('');
+            const {getInfoCategory,category}=common();
             /*验证第一级分类*/
             let categoryName = (rule, value, callback) => {
                 form.categoryName = striptscript(value); //过滤一次
@@ -227,23 +229,27 @@
                 btnSubmitType.value=firstItem.level;
                 console.log(categorys.current);
             }
-            /*获取分类信息*/
-            const getCategory = () => {
-
-                GetCategory({}).then(res => {
-                    if (res.resCode == 0) {
-                        categorys.item = res.data.data;
-                        console.log(categorys);
-                    }
-
-                }).catch(err => {
-                    console.log(err)
-                })
-
-            }
+            // /*获取分类信息*/
+            // const getCategory = () => {
+            //
+            //     GetCategory({}).then(res => {
+            //         if (res.resCode == 0) {
+            //             categorys.item = res.data.data;
+            //             console.log(categorys);
+            //         }
+            //
+            //     }).catch(err => {
+            //         console.log(err)
+            //     })
+            //
+            // }
             /*元素加载完成以后*/
             onMounted(() => {
-                getCategory()
+                getInfoCategory()
+            })
+            /*watch*/
+            watch(()=>category.item,(value)=>{
+                categorys.item=value
             })
 
             return {
