@@ -10,7 +10,8 @@
                             <svg-icon icon-class="add"></svg-icon>
                             {{firstItem.category_name}}
                             <div class="button-group">
-                                <el-button size="mini" type="danger" round @click="btneditCategory({data:firstItem,level:'firstCategory'})">编辑
+                                <el-button size="mini" type="danger" round
+                                           @click="btneditCategory({data:firstItem,level:'firstCategory'})">编辑
                                 </el-button>
                                 <el-button size="mini" type="success" round @click="btnAddSecond()">添加子类
                                 </el-button>
@@ -52,10 +53,10 @@
 </template>
 <script>
     import {reactive, ref, onMounted, watch} from "@vue/composition-api"
-    import {AddFirstCategory, GetCategory, deleteCategory,editCategory} from "@/api/news"
+    import {AddFirstCategory, GetCategory, deleteCategory, editCategory} from "@/api/news"
     import {striptscript} from "@/utils/validate"
     import {Message} from "element-ui";
-    import { common } from "@/api/common";
+    import {common} from "@/api/common";
 
     export default {
         name: "category",
@@ -74,13 +75,13 @@
                 ],
             })
             /*分类信息*/
-            let categorys = reactive({item: [],current:[]});
+            let categorys = reactive({item: [], current: []});
             /*ref*/
             let categoryDisabled = ref(false);
             let btnSubmitState = ref(false);
             let formState = ref(false);
             let btnSubmitType = ref('');
-            const {getInfoCategory,category}=common();
+            const {getInfoCategory, category} = common();
             /*验证第一级分类*/
             let categoryName = (rule, value, callback) => {
                 form.categoryName = striptscript(value); //过滤一次
@@ -113,13 +114,8 @@
                     if (valid) {
                         /*这是提交一级分类*/
                         //把按钮变为loading状态
-                        if(categorys.current.length<=0)
-                        {
-                            root.$message({message:'请填写分类！！！', type: 'warning'});
-                            return false;
-                        }
                         btnSubmitState.value = true;
-                        if(btnSubmitType.value && btnSubmitType.value!=''){
+                        if (btnSubmitType.value && btnSubmitType.value != '') {
                             switch (btnSubmitType.value) {
                                 case'addCategory': //添加接口
                                     console.log(btnSubmitType.value);
@@ -127,7 +123,8 @@
                                     break;
                                 case'firstCategory'://编辑一级分类
                                     console.log('编辑一级分类');
-                                    editCategoryApi();
+                                    categorys.current.length > 0 ? editCategoryApi()
+                                        : root.$message({message: '请填写分类！！！', type: 'warning'});
                                     break;
                                 default:
                                     Message.error("提交错误！");
@@ -143,18 +140,18 @@
                 })
             }
             /*显示编辑菜单*/
-            const showFirstCategory=()=>{
+            const showFirstCategory = () => {
                 categoryDisabled.value = true;
                 formState.value = true;
             }
             /*添加一级分类按钮*/
             const btnAddFirst = (Item) => {
                 showFirstCategory()
-                form.categoryName='';
-                btnSubmitType.value=Item.level;
+                form.categoryName = '';
+                btnSubmitType.value = Item.level;
             }
             /*添加一级分类接口调用*/
-            const addCategoryApi=()=>{
+            const addCategoryApi = () => {
                 AddFirstCategory({categoryName: form.categoryName}).then(res => {
                     if (res.resCode === 0) {
                         root.$message({message: res.message, type: 'success'});
@@ -167,26 +164,25 @@
                 }).catch(err => btnSubmitState.value = false)
             }
             /*编辑接口*/
-            const editCategoryApi=()=>{
-                let data={
-                    id:categorys.current.id,
-                    categoryName:form.categoryName  //修改后的名称
+            const editCategoryApi = () => {
+                let data = {
+                    id: categorys.current.id,
+                    categoryName: form.categoryName  //修改后的名称
                 }
-                editCategory(data).then(res=>{
-                    if(res.resCode===0)
-                    {
+                editCategory(data).then(res => {
+                    if (res.resCode === 0) {
                         // let item=categorys.item.find(item=>item.id==categorys.current.id);
                         // item.category_name=form.categoryName;
-                        categorys.current.category_name=res.data.data.categoryName;  //这里能够响应式是因为点击按钮传进来的值
+                        categorys.current.category_name = res.data.data.categoryName;  //这里能够响应式是因为点击按钮传进来的值
 
                         root.$message({message: res.message, type: 'success'});
                         //添加成功需要把返回的数据重新添加到信息分类里面
                     }
-                    categorys.current=[];
+                    categorys.current = [];
                     btnSubmitState.value = false
                     refs['ruleForm'].resetFields()
 
-                }).catch(err=>{
+                }).catch(err => {
                     btnSubmitState.value = false
                 })
             }
@@ -224,9 +220,9 @@
             /*修改分类信息按钮*/
             const btneditCategory = (firstItem) => {
                 showFirstCategory();
-                categorys.current=firstItem.data;
+                categorys.current = firstItem.data;
                 form.categoryName = firstItem.data.category_name;
-                btnSubmitType.value=firstItem.level;
+                btnSubmitType.value = firstItem.level;
                 console.log(categorys.current);
             }
             // /*获取分类信息*/
@@ -248,8 +244,8 @@
                 getInfoCategory()
             })
             /*watch*/
-            watch(()=>category.item,(value)=>{
-                categorys.item=value
+            watch(() => category.item, (value) => {
+                categorys.item = value
             })
 
             return {
