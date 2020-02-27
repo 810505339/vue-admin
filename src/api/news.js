@@ -48,7 +48,7 @@ export function addInfo(data) {
 }
 
 /*获取信息列表*/
-export function getInfo(data) {
+export function getInfoList(data) {
     return server.request({
         method: 'post',
         url: '/news/getList/',

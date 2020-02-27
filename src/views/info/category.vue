@@ -53,7 +53,7 @@
 </template>
 <script>
     import {reactive, ref, onMounted, watch} from "@vue/composition-api"
-    import {AddFirstCategory, GetCategory, deleteCategory, editCategory} from "@/api/news"
+    import {AddFirstCategory, GetCategory, deleteCategory, editCategory, getInfoList} from "@/api/news"
     import {striptscript} from "@/utils/validate"
     import {Message} from "element-ui";
     import {common} from "@/api/common";
@@ -122,7 +122,7 @@
                                     addCategoryApi();
                                     break;
                                 case'firstCategory'://编辑一级分类
-                                    categorys.current.id? editCategoryApi()
+                                    categorys.current.id ? editCategoryApi()
                                         : root.$message({message: '请填写分类！！！', type: 'warning'});
                                     break;
                                 default:
@@ -219,7 +219,7 @@
             /*修改分类信息按钮*/
             const btneditCategory = (firstItem) => {
                 showFirstCategory();
-                categorys.current=firstItem.data;
+                categorys.current = firstItem.data;
                 form.categoryName = firstItem.data.category_name;
                 btnSubmitType.value = firstItem.level;
                 console.log(categorys.current);
@@ -238,9 +238,11 @@
             //     })
             //
             // }
+
             /*元素加载完成以后*/
             onMounted(() => {
                 getInfoCategory()
+
             })
             /*watch*/
             watch(() => category.item, (value) => {

@@ -63,6 +63,7 @@
     @import "@/styles/config.scss";
     #header-wrap {
         position: fixed;
+        z-index: 99;
         height: 75px;
         left: $NavMenuWidth;
         background: #ffffff;

@@ -18,7 +18,7 @@
         </el-form>
         <div slot="footer" class="dialog-footer">
             <el-button @click="dialog_close">取 消</el-button>
-            <el-button type="danger" @click="onSubmit">确 定</el-button>
+            <el-button type="danger" @click="onSubmit" :loading="submitLoading">确 定</el-button>
         </div>
     </el-dialog>
 </template>
@@ -42,6 +42,7 @@
         setup(props, {root, emit, refs}) {
             const dialog_info_flag = ref(false)
             const formLabelWidth = ref('70px')
+            const submitLoading=ref(false)
             const form = reactive({
                 title: '',
                 region: '',
@@ -65,7 +66,15 @@
             }
             /*提交方法*/
             const onSubmit = () => {
-                addInfoApi()
+                refs["ruleForm"].validate((valid)=>{
+                    if (valid) {
+                        submitLoading.value=true;
+                        addInfoApi()
+                    } else {
+                        return false;
+                    }
+                })
+
             }
             /*添加接口*/
             const addInfoApi = () => {
@@ -78,10 +87,11 @@
                     if (res.resCode == 0) {
                         root.$message.success(res.message);
                         refs['ruleForm'].resetFields();
-
+                        submitLoading.value=false;
                     }
                 }).catch(err => {
                     console.log(err);
+                    submitLoading.value=false;
                 })
 
             }
@@ -102,7 +112,8 @@
                 open,
                 rules,
                 options,
-                onSubmit
+                onSubmit,
+                submitLoading
             }
         },
     }
