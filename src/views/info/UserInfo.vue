@@ -1,54 +1,54 @@
 <template>
     <div>
         <!--导航栏-->
-        <el-form :inline="true"  class="demo-form-inline" style="margin-bottom: 50px">
-                <el-row type="flex"  justify="center" class="row-bg" :gutter="50">
-                    <el-col :span="4" >
-                        <el-form-item label="分类：" label-width="60px">
-                            <el-select v-model="InfoType" placeholder="请选择" style="width:110%" class="InfoType" >
-                                <el-option
-                                        v-for="item in options.category"
-                                        :key="item.id"
-                                        :label="item.category_name"
-                                        :value="item.id">
-                                </el-option>
-                            </el-select>
-                        </el-form-item>
-                    </el-col>
+        <el-form :inline="true" class="demo-form-inline" style="margin-bottom: 50px">
+            <el-row type="flex" justify="center" class="row-bg" :gutter="50">
+                <el-col :span="4">
+                    <el-form-item label="分类：" label-width="60px">
+                        <el-select v-model="InfoType" placeholder="请选择" style="width:110%" class="InfoType">
+                            <el-option
+                                    v-for="item in options.category"
+                                    :key="item.id"
+                                    :label="item.category_name"
+                                    :value="item.id">
+                            </el-option>
+                        </el-select>
+                    </el-form-item>
+                </el-col>
 
-                    <el-col :span="9" >
-                        <el-form-item label="日期："   label-width="60px">
-                            <el-date-picker style="width:100%"
-                                    v-model="Datetime"
-                                    type="datetimerange"
-                                    :picker-options="pickerOptions"
-                                    range-separator="至"
-                                    start-placeholder="开始日期"
-                                    end-placeholder="结束日期"
-                                    align="right">
-                            </el-date-picker>
+                <el-col :span="9">
+                    <el-form-item label="日期：" label-width="60px">
+                        <el-date-picker style="width:100%"
+                                        v-model="Datetime"
+                                        type="datetimerange"
+                                        :picker-options="pickerOptions"
+                                        range-separator="至"
+                                        start-placeholder="开始日期"
+                                        end-placeholder="结束日期"
+                                        align="right">
+                        </el-date-picker>
+                    </el-form-item>
+                </el-col>
+                <el-col :span="11">
+                    <el-form-item label="关键字：" label-width="75px">
+                        <el-select v-model="keyword" placeholder="请选择" style="padding-right:10px" class="keyWord">
+                            <el-option
+                                    v-for="item in keywords"
+                                    :key="item.value"
+                                    :label="item.label"
+                                    :value="item.value">
+                            </el-option>
+                        </el-select>
+                        <el-form-item style="height:50px;">
+                            <el-input v-model="keyWordInput" placeholder="请输入内容" clearable></el-input>
                         </el-form-item>
-                    </el-col>
-                    <el-col :span="11">
-                        <el-form-item  label="关键字：" label-width="75px">
-                            <el-select v-model="keyword" placeholder="请选择" style="padding-right:10px"  class="keyWord">
-                                <el-option
-                                        v-for="item in keywords"
-                                        :key="item.value"
-                                        :label="item.label"
-                                        :value="item.value">
-                                </el-option>
-                            </el-select>
-                            <el-form-item style="height:50px;">
-                                <el-input  v-model="keyWordInput" placeholder="请输入内容" clearable></el-input>
-                            </el-form-item>
-                            <el-form-item style="margin-top:-2px;">
-                                <el-button  type="danger" >搜索</el-button>
-                                <el-button  type="danger" @click="dialog_info = true">新增</el-button>
-                            </el-form-item>
+                        <el-form-item style="margin-top:-2px;">
+                            <el-button type="danger">搜索</el-button>
+                            <el-button type="danger" @click="dialog_info = true">新增</el-button>
                         </el-form-item>
-                    </el-col>
-                </el-row>
+                    </el-form-item>
+                </el-col>
+            </el-row>
 
         </el-form>
         <!--表格数据-->
@@ -56,11 +56,11 @@
             <el-table-column type="selection"></el-table-column>
             <el-table-column prop="title" label="标题"></el-table-column>
             <el-table-column prop="category" label="类别" width="130"></el-table-column>
-            <el-table-column prop="date" label="日期"  width="237"></el-table-column>
+            <el-table-column prop="date" label="日期" width="237"></el-table-column>
             <el-table-column prop="user" label="管理人" width="115"></el-table-column>
-            <el-table-column  label="操作" width="160">
+            <el-table-column label="操作" width="160">
                 <template slot-scope="scope">
-                    <el-button size="mini" type="success">编辑</el-button>
+                    <el-button size="mini" type="success" @click="dialog_info=true">编辑</el-button>
                     <el-button size="mini" type="danger">删除</el-button>
                 </template>
             </el-table-column>
@@ -68,7 +68,7 @@
         <!--分页控件-->
 
         <el-row type="flex" justify="center" style="margin-top:20px">
-            <el-col :span="4" >
+            <el-col :span="4">
                 <el-button plain>批量删除</el-button>
             </el-col>
             <el-col :span="16" style="margin-top:10px;">
@@ -84,7 +84,7 @@
             </el-col>
         </el-row>
         <!--新增弹窗-->
-        <DiaLogInfo :flag.sync="dialog_info"/>
+        <DiaLogInfo :flag.sync="dialog_info" :cateGoryInfo="options.category"/>
     </div>
 </template>
 
@@ -93,17 +93,18 @@
     import {onMounted, reactive, ref, watch} from '@vue/composition-api';
     import {global_3} from "../../utils/global3.0";
     import {GetCategory} from "@/api/news"
-    import { common } from "@/api/common"
+    import {common} from "@/api/common"
+    import {getInfo} from "@/api/news"
 
     export default {
         components: {DiaLogInfo},
         setup(props, {root}) {
             /*加载提示*/
-            const loading=ref(false)
+            const loading = ref(false)
 
-            const { category, getInfoCategory}=common();
+            const {category, getInfoCategory} = common();
             /*类型选择数据*/
-            const options = reactive({category:[]})
+            const options = reactive({category: []})
             /*关键字数组*/
             const keywords = reactive([
                 {
@@ -144,7 +145,7 @@
             })
 
             //加载 开始
-            loading.value=true;
+            loading.value = true;
             /*表格数据*/
             const tableData = reactive([{
                 title: '二狗11111111111111111111111111111111111111111111111',
@@ -159,7 +160,7 @@
                     user: '二狗'
                 }])
             //加载 结束
-            loading.value=false;
+            loading.value = false;
 
             /*类型选择数据显示*/
             const InfoType = ref('')
@@ -185,6 +186,15 @@
             //删除弹窗data函数
             const confirmData = (val) => {
                 console.log(val)
+            }
+            /*获取信息接口*/
+            const getInfoApi = () => {
+                getInfo().then(res => {
+                    console.log(res);
+                }).catch(err => {
+                    console.log(err);
+                })
+
             }
             /*列表删除操作*/
             const deleteInfo = () => {
@@ -220,29 +230,31 @@
 
             }
             /*生命周期*/
-            onMounted(()=>{
+            onMounted(() => {
                 getInfoCategory();
+                //getInfoApi();
+
             })
             /*watch*/
-            watch(()=>category.item,(value)=>{
-                options.category=value;
+            watch(() => category.item, (value) => {
+                options.category = value;
             })
 
-          /*  /!*获取分类列表*!/
-            const GetCategoryApi=()=>{
-                GetCategory({}).then(res=>{
-                    if (res.resCode == 0) {
-                        InfoTypes.category=res.data.data;
+            /*  /!*获取分类列表*!/
+              const GetCategoryApi=()=>{
+                  GetCategory({}).then(res=>{
+                      if (res.resCode == 0) {
+                          InfoTypes.category=res.data.data;
 
-                    }
-                }).catch(err=>{
-                    console.log(err);
-                })
-            };
+                      }
+                  }).catch(err=>{
+                      console.log(err);
+                  })
+              };
 
-            onMounted(()=>{
-                GetCategoryApi();
-            });*/
+              onMounted(()=>{
+                  GetCategoryApi();
+              });*/
 
             return {
                 options,

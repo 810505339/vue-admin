@@ -122,7 +122,6 @@
                                     addCategoryApi();
                                     break;
                                 case'firstCategory'://编辑一级分类
-                                    console.log( typeof categorys.current[0]);
                                     categorys.current.id? editCategoryApi()
                                         : root.$message({message: '请填写分类！！！', type: 'warning'});
                                     break;
