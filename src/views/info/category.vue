@@ -246,7 +246,8 @@
             })
             /*watch*/
             watch(() => category.item, (value) => {
-                categorys.item = value
+                console.log(category.item)
+                categorys.item=value
             })
 
             return {
