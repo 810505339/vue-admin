@@ -12,7 +12,7 @@ export function global_3() {
             center:  params.center||false
         }).then(() => {
             str.value='修改str'
-            params.data && params.data(params.id)
+            //params.data && params.data(params.id)
             Message({
                 type: 'success',
                 message: '删除成功!'

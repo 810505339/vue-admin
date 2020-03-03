@@ -55,3 +55,12 @@ export function getInfoList(data) {
         data
     }).then(res => Promise.resolve(res.data)).catch(err => Promise.reject(err))
 }
+/*删除信息*/
+export function deleteInfo(data) {
+    return server.request({
+        method: 'post',
+        url: '/news/deleteInfo/',
+        data
+    }).then(res => Promise.resolve(res.data)).catch(err => Promise.reject(err))
+
+}

@@ -9,7 +9,8 @@ export default {
                 type: params.type || 'warning',
                 center: params.center || false
             }).then(() => {
-                params.thenFn && params.thenFn(params.id);
+               params.thenFn && params.thenFn(params.id);
+
                 Message({
                     type: 'success',
                     message: '删除成功!'

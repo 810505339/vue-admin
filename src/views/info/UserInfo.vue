@@ -52,23 +52,23 @@
 
         </el-form>
         <!--表格数据-->
-        <el-table :data="tableData.item" style="width:100%;" v-loading="loading" border>
+        <el-table :data="tableData.item" style="width:100%;" v-loading="loading" border  @selection-change="handleSelectionChange">
             <el-table-column type="selection"></el-table-column>
             <el-table-column prop="title" label="标题"></el-table-column>
-            <el-table-column prop="categoryId" label="类别" width="130"></el-table-column>
+            <el-table-column prop="categoryId" label="类别" width="130" :formatter="toCategory"></el-table-column>
             <el-table-column prop="createDate" label="日期" width="237" :formatter="getTime"></el-table-column>
             <!--            <el-table-column prop="user" label="管理人" width="115"></el-table-column>-->
             <el-table-column label="操作" width="160">
                 <template slot-scope="scope">
                     <el-button size="mini" type="success">编辑</el-button>
-                    <el-button size="mini" type="danger">删除</el-button>
+                    <el-button size="mini" type="danger" @click="doDeleteInfo(scope.row.id)">删除</el-button>
                 </template>
             </el-table-column>
         </el-table>
         <!--分页控件-->
         <el-row type="flex" justify="center" style="margin-top:20px">
             <el-col :span="4">
-                <el-button plain>批量删除</el-button>
+                <el-button plain @click="deleteAll">批量删除</el-button>
             </el-col>
             <el-col :span="16" style="margin-top:10px;">
                 <el-pagination
@@ -91,9 +91,10 @@
     import DiaLogInfo from '@/views/info/dialog/dialoginfo';
     import {onMounted, reactive, ref, watch} from '@vue/composition-api';
     import {global_3} from "../../utils/global3.0";
-    import {GetCategory, getInfoList} from "@/api/news"
+    import {GetCategory, getInfoList,deleteInfo} from "@/api/news"
     import {common} from "@/api/common"
     import {getLocalTime} from "@/utils/common"
+    import {Message} from "element-ui";
 
     export default {
         components: {DiaLogInfo},
@@ -156,6 +157,7 @@
             const dialog_info = ref(false)
             /*总条数*/
             let total = ref(0)
+            let deleteInfoId=reactive([]);
             /*页码*/
             const page = reactive({
                 pageNumber: 1,
@@ -169,12 +171,22 @@
                 page.pageNumber = val;
                 getInfoListApi();
             }
-            const getTime=(row, column, cellValue, index)=>{
+            const getTime = (row, column, cellValue, index) => {
                 return getLocalTime(row.createDate)
 
             }
+            /*分类ID转汉字*/
+            const toCategory = (row, column, cellValue, index) => {
+                let categoryData=options.category.filter(item=>item.id==row.categoryId)[0];
+                if(categoryData!='')
+                {
+                    return   categoryData.category_name;
+                }
 
-                /*获取信息列表接口*/
+
+            }
+
+            /*获取信息列表接口*/
             const getInfoListApi = () => {
                 loading.value = true;
                 let data = {
@@ -197,45 +209,59 @@
                 })
             }
             /*str:sss 是将str重命名为sss*/
-            const {confirm, str: sss} = global_3()
+           // const {confirm, str: sss} = global_3()
             watch(() => {
-                console.log(sss.value)
             })
             //删除弹窗data函数
-            const confirmData = (val) => {
-                console.log(val)
+            const confirmData = () => {
+                deleteInfo({id:deleteInfoId}).then(res=>{
+                    deleteInfoId=[];
+                    getInfoListApi();
+
+                })
             }
             /*列表删除操作*/
-            const deleteInfo = () => {
+            const doDeleteInfo = (id) => {
                 // root.confirm({
                 //     message:'此操作将永久删除该文件, 是否继续?',
                 //     center:true
                 // });options
-
-                confirm({
+                deleteInfoId=[id];
+                root.confirm({
                     message: '此操作将批量删除, 是否继续?',
                     center: true,
-                    data: confirmData,
-                    id: 222
+                    thenFn: confirmData,
+
                 })
 
             }
+            /*多选*/
+            const handleSelectionChange=(val)=>{
+                deleteInfoId=val.map(item=>item.id);
 
+            }
             /*批量删除操作*/
             const deleteAll = () => {
-                confirm({
-                    message: '此操作将批量删除, 是否继续?',
-                    center: true,
-                    data: confirmData,
-                    id: 1111
-                })
-                /*这是2.0原型链*/
-                /* root.confirm({
-                     message:'此操作将批量删除, 是否继续?',
-                     center:true,
-                     data:confirmData,
-                     id:1111
-                 });*/
+                if(deleteInfoId.length<0)
+                {
+                    root.$message.error("请至少选择一条信息");
+                }else
+                {
+                    root.confirm({
+                        message: '此操作将批量删除, 是否继续?',
+                        center: true,
+                        thenFn: confirmData,
+                        id: 1111
+                    })
+                    /*这是2.0原型链*/
+                    /* root.confirm({
+                         message:'此操作将批量删除, 是否继续?',
+                         center:true,
+                         data:confirmData,
+                         id:1111
+                     });*/
+                }
+
 
             }
             /*生命周期*/
@@ -285,9 +311,11 @@
                 total,
                 handleSizeChange,
                 handleCurrentChange,
-                deleteInfo,
+                doDeleteInfo,
                 deleteAll,
-                getTime
+                getTime,
+                toCategory,
+                handleSelectionChange
             }
         }
     }
