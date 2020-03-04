@@ -25,6 +25,8 @@
                                         range-separator="至"
                                         start-placeholder="开始日期"
                                         end-placeholder="结束日期"
+                                        format="yyyy-MM-dd HH:mm:ss"
+                                        value-format="yyyy-MM-dd  HH:mm:ss"
                                         align="right">
                         </el-date-picker>
                     </el-form-item>
@@ -43,7 +45,7 @@
                             <el-input v-model="keyWordInput" placeholder="请输入内容" clearable></el-input>
                         </el-form-item>
                         <el-form-item style="margin-top:-2px;">
-                            <el-button type="danger">搜索</el-button>
+                            <el-button type="danger" @click="search">搜索</el-button>
                             <el-button type="danger" @click="dialog_info = true">新增</el-button>
                         </el-form-item>
                     </el-form-item>
@@ -108,11 +110,11 @@
             /*关键字数组*/
             const keywords = reactive([
                 {
-                    value: 'ID',
+                    value: 'id',
                     label: 'ID'
                 },
                 {
-                    value: '标题',
+                    value: 'title',
                     label: '标题'
                 },
             ])
@@ -189,16 +191,7 @@
             /*获取信息列表接口*/
             const getInfoListApi = () => {
                 loading.value = true;
-                let data = {
-                    categoryId: '',
-                    startTiem: '',
-                    endTime: '',
-                    title: '',
-                    id: '',
-                    pageNumber: page.pageNumber,
-                    pageSize: page.pageSize
-                }
-                getInfoList(data).then(res => {
+                getInfoList(infoDate()).then(res => {
                     tableData.item = res.data.data
                     total.value = res.data.total
                     loading.value = false
@@ -264,6 +257,23 @@
 
 
             }
+            /*重新组合数据用于搜索*/
+            const infoDate=()=>{
+                let data = {
+                    pageNumber: page.pageNumber,
+                    pageSize: page.pageSize
+                }
+                data.categoryId=InfoType.value;
+                data.startTiem=Datetime[0];
+                data.endTime=Datetime[1];
+                data[keyword.value]=keyWordInput.value;
+                return data;
+            }
+            /*点击搜索按钮*/
+            const search=()=>{
+
+                getInfoListApi();
+            }
             /*生命周期*/
             onMounted(() => {
                 //这个是调用了公共的方法需要配合WATCH使用
@@ -315,7 +325,8 @@
                 deleteAll,
                 getTime,
                 toCategory,
-                handleSelectionChange
+                handleSelectionChange,
+                search
             }
         }
     }
